@@ -36,6 +36,9 @@
       <a class="btn btn-ghost" href="mailto:billytadouanla45@gmail.com">Contact</a>
     </div>
   </div>
+  <div class="hero-media">
+    <img src="assets/billyprofilepic.jpeg" alt="Billy engineering projects" class="hero-photo">
+  </div>
   <div class="hero-scroll">
     <div class="scroll-line"></div>
     scroll
@@ -138,7 +141,8 @@
   <div class="projects-list reveal">
 
     <a class="project-item" href="https://github.com/billchriss717/MIPS-single-cycle-processor-" target="_blank">
-      <div>
+      <iframe class="project-media" src="https://www.youtube.com/embed/PSQbqb3dG6c" title="MIPS Single-Cycle Microprocessor Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="project-content">
         <div class="project-num">01</div>
         <div class="project-name">MIPS Single-Cycle Microprocessor</div>
         <div class="project-desc">Designed and implemented a fully functional 32-bit MIPS processor from scratch in SystemVerilog. Synthesised and deployed on a Digilent Basys3 FPGA board using the Vivado Design Suite — covering RTL design, simulation, place-and-route, and bitstream generation.</div>
@@ -150,11 +154,14 @@
           <span class="tag">Computer Architecture</span>
         </div>
       </div>
-      <div class="project-arrow">↗</div>
     </a>
 
     <a class="project-item" href="https://github.com/billchriss717/Remote-controlled-LED-dot-matrix-display" target="_blank">
-      <div>
+      <video class="project-media" controls preload="metadata" poster="assets/LED4.jpg">
+        <source src="assets/LED_video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="project-content">
         <div class="project-num">02</div>
         <div class="project-name">Remote-Controlled LED Dot Matrix Display</div>
         <div class="project-desc">Embedded C project on the ATmega328P microcontroller to render characters, digits, and custom symbols on an LED dot matrix display. Implemented hardware interfacing, display driver logic, and remote control input handling.</div>
@@ -166,11 +173,19 @@
           <span class="tag">Hardware Interfacing</span>
         </div>
       </div>
-      <div class="project-arrow">↗</div>
     </a>
 
     <div class="project-item" style="cursor:default;">
-      <div>
+      <div class="carousel" data-autoplay="3000">
+        <button class="carousel-btn prev" aria-label="Previous">‹</button>
+        <div class="carousel-track">
+          <img src="assets/SRD2.jpeg" class="active" alt="SDR 1">
+          <img src="assets/SRD1.jpeg" alt="SDR 2">
+          <img src="assets/SRD3.jpeg" alt="SDR 3">
+        </div>
+        <button class="carousel-btn next" aria-label="Next">›</button>
+      </div>
+      <div class="project-content">
         <div class="project-num">03</div>
         <div class="project-name">Software Defined Radio (SDR) Receiver</div>
         <div class="project-desc">Designed and implemented an SDR receiver in MATLAB, applying analog and digital signal processing techniques including filtering, demodulation, and signal decoding. Draws on a background in RF frontend design and communication systems theory.</div>
@@ -182,8 +197,9 @@
           <span class="tag">Communication Systems</span>
         </div>
       </div>
-      <div class="project-arrow" style="color:var(--bg3);">↗</div>
     </div>
+
+   
 
   </div>
 </div>
@@ -246,6 +262,60 @@
       a.style.color = a.getAttribute('href') === '#' + current ? 'var(--text)' : '';
     });
   });
+  // Initialize per-carousel controls
+  (function() {
+    const carousels = document.querySelectorAll('.carousel');
+    carousels.forEach(carousel => {
+      const slides = Array.from(carousel.querySelectorAll('img'));
+      if (!slides.length) return;
+      const btnPrev = carousel.querySelector('.carousel-btn.prev');
+      const btnNext = carousel.querySelector('.carousel-btn.next');
+      let idx = slides.findIndex(s => s.classList.contains('active'));
+      if (idx < 0) idx = 0;
+
+      function show(i) {
+        slides.forEach((s, j) => s.classList.toggle('active', j === i));
+      }
+
+      if (btnPrev) btnPrev.addEventListener('click', (e) => {
+        e.preventDefault();
+        idx = (idx - 1 + slides.length) % slides.length;
+        show(idx);
+      });
+
+      if (btnNext) btnNext.addEventListener('click', (e) => {
+        e.preventDefault();
+        idx = (idx + 1) % slides.length;
+        show(idx);
+      });
+
+      // make carousel focusable for keyboard control
+      carousel.tabIndex = 0;
+      carousel.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') btnPrev && btnPrev.click();
+        if (e.key === 'ArrowRight') btnNext && btnNext.click();
+      });
+
+      // autoplay if requested (data-autoplay in milliseconds)
+      const autoplayMs = parseInt(carousel.getAttribute('data-autoplay'), 10);
+      if (!isNaN(autoplayMs) && autoplayMs > 0) {
+        let intervalId = setInterval(() => {
+          idx = (idx + 1) % slides.length;
+          show(idx);
+        }, autoplayMs);
+
+        // pause on hover/focus
+        carousel.addEventListener('mouseenter', () => clearInterval(intervalId));
+        carousel.addEventListener('mouseleave', () => {
+          intervalId = setInterval(() => { idx = (idx + 1) % slides.length; show(idx); }, autoplayMs);
+        });
+        carousel.addEventListener('focusin', () => clearInterval(intervalId));
+        carousel.addEventListener('focusout', () => {
+          intervalId = setInterval(() => { idx = (idx + 1) % slides.length; show(idx); }, autoplayMs);
+        });
+      }
+    });
+  })();
 </script>
 </body>
 </html>
